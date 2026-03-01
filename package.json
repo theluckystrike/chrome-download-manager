@@ -1,0 +1,38 @@
+{
+    "name": "chrome-download-manager",
+    "version": "0.1.0",
+    "description": "Chrome Downloads API wrapper — download files, track progress, pause/resume, organize by type, and queue management for MV3 extensions.",
+    "author": "Zovo <hello@zovo.one>",
+    "license": "MIT",
+    "keywords": [
+        "chrome-extension",
+        "downloads",
+        "chrome-downloads",
+        "download-manager",
+        "file-download",
+        "manifest-v3",
+        "browser-extension",
+        "progress",
+        "queue"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/theluckystrike/chrome-download-manager.git"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "build": "tsc",
+        "test": "jest",
+        "prepublishOnly": "npm run build"
+    },
+    "devDependencies": {
+        "@types/chrome": "^0.0.260",
+        "typescript": "^5.3.3"
+    }
+}
