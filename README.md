@@ -1,18 +1,21 @@
-# chrome-download-manager — Downloads API Wrapper
+# chrome-download-manager
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+Manage downloads in Chrome extensions.
 
-> **Built by [Zovo](https://zovo.one)**
+## Installation
 
-**Chrome Downloads API wrapper** — download files, text/JSON export, progress tracking, pause/resume, concurrent queue.
-
-## 🚀 Quick Start
-```typescript
-import { DownloadManager, DownloadQueue } from 'chrome-download-manager';
-await DownloadManager.downloadJSON({ users: [] }, 'backup.json');
-const queue = new DownloadQueue(3);
-queue.enqueueAll(['https://a.com/1.zip', 'https://a.com/2.zip']);
+```bash
+npm install chrome-download-manager
 ```
 
-## 📄 License
-MIT — [Zovo](https://zovo.one)
+## Usage
+
+```javascript
+import { DownloadManager } from 'chrome-download-manager';
+
+const id = await DownloadManager.download(url);
+```
+
+## License
+
+MIT
