@@ -1,8 +1,9 @@
-# chrome-download-manager
+[![CI](https://github.com/theluckystrike/chrome-download-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/theluckystrike/chrome-download-manager/actions)
+[![npm](https://img.shields.io/npm/v/chrome-download-manager)](https://www.npmjs.com/package/chrome-download-manager)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 
-[![npm version](https://img.shields.io/npm/v/chrome-download-manager)](https://npmjs.com/package/chrome-download-manager)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
-[![MIT License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
+# chrome-download-manager
 
 A typed TypeScript wrapper around the Chrome Downloads API for Manifest V3 extensions. Provides file downloads with progress tracking, pause/resume control, text and JSON export, and concurrent download queue management.
 
@@ -177,5 +178,4 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 MIT License. See [LICENSE](LICENSE) for details.
 
 ---
-
-Built by [theluckystrike](https://github.com/theluckystrike) | [zovo.one](https://zovo.one)
+Built by [theluckystrike](https://github.com/theluckystrike) — [zovo.one](https://zovo.one)
