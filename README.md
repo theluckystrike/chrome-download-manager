@@ -1,25 +1,26 @@
 # chrome-download-manager
 
 [![npm version](https://img.shields.io/npm/v/chrome-download-manager)](https://npmjs.com/package/chrome-download-manager)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![CI Status](https://github.com/theluckystrike/chrome-download-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/theluckystrike/chrome-download-manager/actions)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
+[![MIT License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
 
-A typed wrapper around the Chrome Downloads API for Manifest V3 extensions. Handles file downloads, pause/resume, text and JSON export, and concurrent download queuing.
+A typed TypeScript wrapper around the Chrome Downloads API for Manifest V3 extensions. Provides file downloads with progress tracking, pause/resume control, text and JSON export, and concurrent download queue management.
 
-INSTALLATION
+## Installation
 
 ```bash
 npm install chrome-download-manager
 ```
 
-USAGE
+## Usage
+
+Import the library in your Chrome extension:
 
 ```typescript
 import { DownloadManager, DownloadQueue } from 'chrome-download-manager';
 ```
 
-Download a file from a URL.
+### Download a File
 
 ```typescript
 const id = await DownloadManager.download({
@@ -27,11 +28,25 @@ const id = await DownloadManager.download({
   filename: 'file.zip',
   saveAs: true,
   conflictAction: 'uniquify',
-  onComplete: (id) => console.log('Done', id)
+  onComplete: (id) => console.log('Download complete:', id)
 });
 ```
 
-Pause, resume, or cancel an active download.
+### Download Text or JSON
+
+Export data directly as downloadable files:
+
+```typescript
+// Download text as a file
+await DownloadManager.downloadText('Hello, world!', 'hello.txt', 'text/plain');
+
+// Download JSON data
+await DownloadManager.downloadJSON({ name: 'example', version: '1.0.0' }, 'data.json');
+```
+
+### Control Downloads
+
+Pause, resume, or cancel active downloads:
 
 ```typescript
 await DownloadManager.pause(id);
@@ -39,76 +54,95 @@ await DownloadManager.resume(id);
 await DownloadManager.cancel(id);
 ```
 
-Look up a download by ID or fetch recent downloads.
+### Query Downloads
+
+Retrieve download information by ID or fetch recent downloads:
 
 ```typescript
 const item = await DownloadManager.get(id);
 const recent = await DownloadManager.getRecent(10);
 ```
 
-Open a downloaded file or reveal it in the system file manager.
+### Open or Show Files
 
 ```typescript
+// Open the downloaded file in the default application
 DownloadManager.open(id);
+
+// Show the file in the system file manager
 DownloadManager.show(id);
 ```
 
-Export text or JSON directly as a downloadable file.
+### Download Queue
+
+Queue multiple downloads with configurable concurrency:
 
 ```typescript
-await DownloadManager.downloadText('hello world', 'note.txt', 'text/plain');
-await DownloadManager.downloadJSON({ key: 'value' }, 'data.json');
-```
+const queue = new DownloadQueue(3); // Maximum 3 concurrent downloads
 
-Queue multiple downloads with a concurrency limit.
-
-```typescript
-const queue = new DownloadQueue(3);
+// Add single download
 queue.enqueue({ url: 'https://example.com/a.zip' });
+
+// Add multiple URLs
 queue.enqueueAll([
   'https://example.com/b.zip',
-  'https://example.com/c.zip'
+  'https://example.com/c.zip',
+  'https://example.com/d.zip'
 ]);
 
-console.log(queue.pending);
+console.log(`Pending downloads: ${queue.pending}`);
+
+// Clear all pending downloads
 queue.clear();
 ```
 
-API
+## API Reference
 
-DownloadManager (static methods)
+### DownloadManager
 
-- download(options) - Start a download. Returns the download ID.
-- downloadText(text, filename, mimeType?) - Save a string as a file.
-- downloadJSON(data, filename?) - Save a value as formatted JSON.
-- pause(id) - Pause an active download.
-- resume(id) - Resume a paused download.
-- cancel(id) - Cancel a download.
-- get(id) - Retrieve the DownloadItem for a given ID.
-- getRecent(limit?) - Get recent downloads, newest first. Defaults to 20.
-- open(id) - Open the downloaded file.
-- show(id) - Show the file in the system file manager.
+Static methods for managing downloads:
 
-DownloadOptions
+| Method | Description |
+|--------|-------------|
+| `download(options)` | Start a download. Returns the download ID. |
+| `downloadText(text, filename, mimeType?)` | Save a string as a file. |
+| `downloadJSON(data, filename?)` | Save a value as formatted JSON. |
+| `pause(id)` | Pause an active download. |
+| `resume(id)` | Resume a paused download. |
+| `cancel(id)` | Cancel a download. |
+| `get(id)` | Retrieve the DownloadItem for a given ID. |
+| `getRecent(limit?)` | Get recent downloads, newest first. Defaults to 20. |
+| `open(id)` | Open the downloaded file in the default application. |
+| `show(id)` | Show the file in the system file manager. |
 
-- url (string, required) - The URL to download.
-- filename (string, optional) - Suggested filename.
-- saveAs (boolean, optional) - Show the Save As dialog.
-- conflictAction ('uniquify' | 'overwrite' | 'prompt', optional) - How to handle filename conflicts. Defaults to 'uniquify'.
-- onProgress ((progress: number) => void, optional) - Progress callback.
-- onComplete ((id: number) => void, optional) - Completion callback.
+### DownloadOptions
 
-DownloadQueue
+Options object for the `download()` method:
 
-- constructor(concurrent?) - Create a queue. Default concurrency is 3.
-- enqueue(options) - Add a download to the queue.
-- enqueueAll(urls) - Add multiple URLs to the queue.
-- pending (getter) - Number of queued downloads.
-- clear() - Remove all pending downloads from the queue.
+| Property | Type | Description |
+|----------|------|-------------|
+| `url` | `string` | The URL to download (required). |
+| `filename` | `string` | Suggested filename for the download. |
+| `saveAs` | `boolean` | Show the Save As dialog. |
+| `conflictAction` | `'uniquify' \| 'overwrite' \| 'prompt'` | How to handle filename conflicts. Defaults to `'uniquify'`. |
+| `onProgress` | `(progress: number) => void` | Progress callback (not currently fired by Chrome API). |
+| `onComplete` | `(id: number) => void` | Called when the download completes. |
 
-REQUIREMENTS
+### DownloadQueue
 
-This library wraps `chrome.downloads` and must run inside a Chrome extension with the `downloads` permission declared in your manifest.json.
+Class for managing sequential downloads with concurrency control:
+
+| Method/Property | Description |
+|-----------------|-------------|
+| `constructor(concurrent?)` | Create a queue. Default concurrency is 3. |
+| `enqueue(options)` | Add a download to the queue. |
+| `enqueueAll(urls)` | Add multiple URLs to the queue. |
+| `pending` | Get the number of pending downloads (getter). |
+| `clear()` | Remove all pending downloads from the queue. |
+
+## Requirements
+
+This library wraps the Chrome Downloads API and requires a Chrome extension with the appropriate permissions in your `manifest.json`:
 
 ```json
 {
@@ -116,22 +150,32 @@ This library wraps `chrome.downloads` and must run inside a Chrome extension wit
 }
 ```
 
-DEVELOPMENT
+For more information about building Chrome extensions, see the [Chrome Extension Guide](https://developer.chrome.com/docs/extensions/mv3/).
+
+## Development
 
 ```bash
+# Clone the repository
 git clone https://github.com/theluckystrike/chrome-download-manager.git
-cd chrome-download-manager
+
+# Install dependencies
 npm install
+
+# Build TypeScript
 npm run build
+
+# Run tests
 npm test
 ```
 
-CONTRIBUTING
+## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-LICENSE
+## License
 
-MIT. See [LICENSE](LICENSE) for details.
+MIT License. See [LICENSE](LICENSE) for details.
+
+---
 
 Built by [theluckystrike](https://github.com/theluckystrike) | [zovo.one](https://zovo.one)
